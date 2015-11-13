@@ -9,4 +9,5 @@ copyrighted by Michael Diamond (http://www.DigitalGemstones.com).
 To compile and generate executable jar, just run maven like following.
 
 mvn compile
+
 mvn package
