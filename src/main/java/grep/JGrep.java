@@ -400,7 +400,7 @@ public class JGrep extends JFrame implements ActionListener, ListSelectionListen
         
         // North panel
         nPanel.add(new JLabel("Path:"));
-        fileField = new JTextField(grepPath.getAbsolutePath(),30);
+        fileField = new JTextField(grepPath.getAbsolutePath(),40);
         fileField.addActionListener(this);
         nPanel.add(fileField);
         
@@ -412,7 +412,7 @@ public class JGrep extends JFrame implements ActionListener, ListSelectionListen
         
         nPanel.add(new JLabel("Pattern:"));
         
-        patternField = new JTextField(8);
+        patternField = new JTextField(30);
         patternField.addActionListener(this);
         nPanel.add(patternField);
         
@@ -435,7 +435,7 @@ public class JGrep extends JFrame implements ActionListener, ListSelectionListen
         nPanel.add(stopButton);
         
         // content
-        // left is file list and right is matched lines in each file
+        // top is file list and bottom is matched lines in each file
         fileTableModel = new FileListModel();
         fileTable = new JTable(fileTableModel);
         fileTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
@@ -504,7 +504,7 @@ public class JGrep extends JFrame implements ActionListener, ListSelectionListen
         // final setup
         setIconImage(new ImageIcon(getClass().getClassLoader().getResource("jGrep Logo 64.png")).getImage());
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-        setSize(800,600);
+        setSize(1000,700);
         setLocationRelativeTo(null);
         setVisible(true);
         
@@ -702,7 +702,9 @@ public class JGrep extends JFrame implements ActionListener, ListSelectionListen
             rootPath = rp;
             Collections.sort(files);
             fireTableStructureChanged();
-            fileTable.getColumnModel().getColumn(1).setPreferredWidth(25);
+            fileTable.getColumnModel().getColumn(0).setPreferredWidth(100);
+            fileTable.getColumnModel().getColumn(1).setPreferredWidth(300);
+            fileTable.getColumnModel().getColumn(2).setPreferredWidth(25);
         }
         
         @Override
@@ -710,6 +712,8 @@ public class JGrep extends JFrame implements ActionListener, ListSelectionListen
             if(col == 0)
                 return "Files";
             else if(col == 1)
+                return "Pathes";
+            else if(col == 2)
                 return "Matches";
             throw new RuntimeException("Attempted to get out of bounds column");
         }
@@ -717,11 +721,10 @@ public class JGrep extends JFrame implements ActionListener, ListSelectionListen
         @Override
         public Object getValueAt(int row, int col) {
             if(col == 0){
-                String file = files.get(row).getAbsolutePath();
-                if(file.equals(rootPath)) // if the root /is/ the file
-                    return files.get(row).getName();
-                return files.get(row).getAbsolutePath().substring(rootPath.length()+1);
+                return files.get(row).getName();
             } else if(col == 1){
+                return files.get(row).getAbsolutePath();
+            } else if(col == 2){
                 return result.get(files.get(row)).size();
             }
             throw new RuntimeException("Attempted to get out of bounds column");
@@ -740,7 +743,7 @@ public class JGrep extends JFrame implements ActionListener, ListSelectionListen
 
         @Override
         public int getColumnCount() {
-            return 2;
+            return 3;
         }
         
     }
